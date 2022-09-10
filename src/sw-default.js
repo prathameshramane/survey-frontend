@@ -4,9 +4,9 @@ importScripts('https://storage.googleapis.com/workbox-cdn/releases/6.5.4/workbox
 workbox.setConfig({ debug: true });
 // workbox.core.setLogLevel(workbox.core.LOG_LEVELS.debug)
 
-// // Modify SW update cycle
-self.skipWaiting(); // Skip Waiting 
-// workbox.clientsClaim();
+// Modify SW update cycle
+self.skipWaiting();
+workbox.core.clientsClaim();
 
 // We inject manifest here using "workbox-build" in workbox-build-inject.js
 workbox.precaching.precacheAndRoute(injectionPoint)
