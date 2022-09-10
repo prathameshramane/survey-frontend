@@ -9,7 +9,7 @@ self.skipWaiting();
 workbox.core.clientsClaim();
 
 // We inject manifest here using "workbox-build" in workbox-build-inject.js
-workbox.precaching.precacheAndRoute(injectionPoint)
+workbox.precaching.precacheAndRoute(injectionPoint);
 
 // Runtime caching
 workbox.routing.registerRoute(
@@ -23,4 +23,17 @@ workbox.routing.registerRoute(
       })
     ]
   })
-)
+);
+
+// Background Sync
+workbox.routing.registerRoute(
+   new RegExp('https://jsonplaceholder.typicode.com/(.*)'),
+   new workbox.strategies.NetworkOnly({
+    plugins: [
+      new workbox.backgroundSync.BackgroundSyncPlugin('postQueue', {
+        maxRetentionTime: 24 * 60 // Retry for max of 24 Hours
+      })
+    ]
+  }),
+  'POST'
+);

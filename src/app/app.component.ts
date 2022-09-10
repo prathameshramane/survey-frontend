@@ -23,4 +23,16 @@ export class AppComponent implements OnInit {
         this.posts = res;
       })
   }
+
+  createPost() {
+    const data = {
+      title: "Hello World!",
+      body: "This is the body of the post!"
+    };
+    this.http
+      .post('https://jsonplaceholder.typicode.com/posts', data)
+      .subscribe((res) => {
+        console.log(res);
+      })
+  }
 }
