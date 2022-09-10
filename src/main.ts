@@ -4,6 +4,8 @@ import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { AppModule } from './app/app.module';
 import { environment } from './environments/environment';
 
+import { Workbox } from 'workbox-window';
+
 if (environment.production) {
   enableProdMode();
 }
@@ -17,15 +19,17 @@ platformBrowserDynamic().bootstrapModule(AppModule)
 
 function registerServiceWorker(swName: string) {
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker
-      .register(`/${swName}.js`)
-      .then(reg => {
-        console.log('[App] Successful service worker registration', reg);
-      })
-      .catch(err =>
-        console.error('[App] Service worker registration failed', err)
-      );
-  } else {
-    console.error('[App] Service Worker API is not supported in current browser');
+    const wb = new Workbox('sw-default.js');
+
+    // Confirmation on update being deployed
+    wb.addEventListener('installed', event => {
+      if (event.isUpdate) {
+        if (confirm(`New content is available!. Click OK to refresh`)) {
+          window.location.reload();
+        }
+      }
+    });
+
+    wb.register();
   }
 }
