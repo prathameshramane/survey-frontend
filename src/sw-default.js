@@ -10,3 +10,17 @@ workbox.core.clientsClaim();
 
 // We inject manifest here using "workbox-build" in workbox-build-inject.js
 workbox.precaching.precacheAndRoute(injectionPoint)
+
+// Runtime caching
+workbox.routing.registerRoute(
+  new RegExp('https://jsonplaceholder.typicode.com/(.*)'),
+  new workbox.strategies.StaleWhileRevalidate({
+    cacheName: 'jsonplaceholder',
+    plugins: [
+      new workbox.expiration.ExpirationPlugin({
+        maxEntries: 30,
+        maxAgeSeconds: 60 * 60 // 1hr
+      })
+    ]
+  })
+)
