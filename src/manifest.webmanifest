@@ -1,8 +1,8 @@
 {
-  "name": "Angular Workbox",
-  "short_name": "Angular Workbox",
+  "name": "CBRE DRA App",
+  "short_name": "CBRE DRA App",
   "display": "standalone",
-  "theme_color": "#D6012E",
+  "theme_color": "#013F2F",
   "background_color": "#fafafa",
   "scope": "/",
   "start_url": "/",
@@ -40,12 +40,6 @@
     {
       "src": "assets/icons/icon-192x192.png",
       "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "maskable any"
-    },
-    {
-      "src": "assets/icons/icon-384x384.png",
-      "sizes": "384x384",
       "type": "image/png",
       "purpose": "maskable any"
     },
