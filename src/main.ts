@@ -10,26 +10,4 @@ if (environment.production) {
   enableProdMode();
 }
 
-platformBrowserDynamic().bootstrapModule(AppModule)
-  .then(() => {
-    registerServiceWorker('service-worker.js')
-  })
-  .catch(err => console.error(err));
-
-
-function registerServiceWorker(swName: string) {
-  if ('serviceWorker' in navigator) {
-    const wb = new Workbox(swName);
-
-    // Confirmation on update being deployed
-    wb.addEventListener('installed', event => {
-      if (event.isUpdate) {
-        if (confirm(`New content is available!. Click OK to refresh`)) {
-          window.location.reload();
-        }
-      }
-    });
-
-    wb.register();
-  }
-}
+platformBrowserDynamic().bootstrapModule(AppModule);
