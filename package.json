@@ -6,7 +6,7 @@
     "start": "ng serve",
     "build": "npm run build-prod && npm run esbuild-sw && npm run workbox-injectManifest",
     "build-prod": "ng build --configuration production",
-    "esbuild-sw": "esbuild --outfile=dist/angular-workbox/service-worker.js --bundle src/service-worker.ts",
+    "esbuild-sw": "esbuild --outfile=dist/angular-workbox/service-worker.js --bundle src/service-worker/service-worker.ts",
     "workbox-injectManifest": "workbox injectManifest",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
