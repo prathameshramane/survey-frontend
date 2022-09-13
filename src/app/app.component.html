@@ -1,4 +1,10 @@
 <div class="container">
+    <!-- <div class="alert alert-success" *ngIf="connectionStatus=='online'">
+        You are online
+    </div> -->
+    <div class="alert alert-danger" *ngIf="connectionStatus=='offline'">
+        Your are currently offline.
+    </div>
     <h1 class="mb-4">Angular Workbox V9</h1>
     <button class="btn btn-success" (click)="createPost()">Create Post</button>
     <div class="card mb-2" *ngFor="let post of posts">

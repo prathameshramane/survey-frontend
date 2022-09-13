@@ -4,7 +4,7 @@ const {injectManifest} = require('workbox-build');
 var workboxConfig = require('./workbox-config.js')
 
 // Adding one extra property
-workboxConfig.swSrc = 'src/sw-default.js'
+workboxConfig.swSrc = 'src/service-worker.js'
 
 injectManifest(workboxConfig)
   .then(({count, size}) => {

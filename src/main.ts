@@ -12,14 +12,14 @@ if (environment.production) {
 
 platformBrowserDynamic().bootstrapModule(AppModule)
   .then(() => {
-    registerServiceWorker('sw-default')
+    registerServiceWorker('service-worker.js')
   })
   .catch(err => console.error(err));
 
 
 function registerServiceWorker(swName: string) {
   if ('serviceWorker' in navigator) {
-    const wb = new Workbox('sw-default.js');
+    const wb = new Workbox(swName);
 
     // Confirmation on update being deployed
     wb.addEventListener('installed', event => {

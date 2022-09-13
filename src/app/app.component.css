@@ -1,0 +1,17 @@
+/* .alert-success {
+    animation-name: online-response;
+    animation-duration: 0.5s;
+    animation-timing-function: ease;
+    animation-delay: 2s;
+    animation-fill-mode: forwards;
+}
+
+@keyframes online-response {
+    from {
+        opacity: 1;
+    }
+
+    to {
+        opacity: 0;
+    }
+} */
