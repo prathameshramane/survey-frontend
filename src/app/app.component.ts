@@ -2,6 +2,8 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { fromEvent, Observable, Subscription } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 
+import { openDB, IDBPDatabase,  } from "idb";
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -15,7 +17,9 @@ export class AppComponent implements OnInit, OnDestroy {
   offlineEvent: Observable<Event>;
 
   subscriptions: Subscription[] = [];
-  connectionStatus: string;
+  connectionStatus: string = navigator.onLine ? 'online':'offline';
+  pendingRequests: number = 0;
+  db: IDBPDatabase;
 
   constructor(private http: HttpClient) {}
 
@@ -23,6 +27,7 @@ export class AppComponent implements OnInit, OnDestroy {
     this.onlineEvent = fromEvent(window, 'online');
     this.offlineEvent = fromEvent(window, 'offline');
 
+<<<<<<< HEAD
     this.subscriptions.push(
       this.onlineEvent.subscribe((e) => {
         this.connectionStatus = 'online';
@@ -36,8 +41,22 @@ export class AppComponent implements OnInit, OnDestroy {
         console.log('Offline...');
       })
     );
+=======
+    this.subscriptions.push(this.onlineEvent.subscribe(e => {
+      this.connectionStatus = 'online';
+      this.getPendingRequest();
+      console.log('Online...');
+    }));
+
+    this.subscriptions.push(this.offlineEvent.subscribe(e => {
+      this.connectionStatus = 'offline';
+      this.getPendingRequest();
+      console.log('Offline...');
+    }));
+>>>>>>> 0747e81c7583fe42ba36b67f329335cabf0714a4
 
     this.getPosts();
+    this.initDbConnection();
   }
 
   ngOnDestroy(): void {
@@ -59,8 +78,29 @@ export class AppComponent implements OnInit, OnDestroy {
     };
     this.http
       .post('https://jsonplaceholder.typicode.com/posts', data)
+<<<<<<< HEAD
       .subscribe((res) => {
         console.log(res);
       });
+=======
+      .subscribe({
+        next:(res) => {
+          console.log(res);
+        },
+        error: () => {
+          this.getPendingRequest();
+        }
+      })
+>>>>>>> 0747e81c7583fe42ba36b67f329335cabf0714a4
+  }
+
+  async initDbConnection(){
+    this.db = await openDB('workbox-background-sync');
+    this.getPendingRequest();
+  }
+
+  async getPendingRequest() {
+  console.log("Updating Pending Requests....")
+   this.pendingRequests = (await this.db.getAllKeysFromIndex('requests','queueName')).length;
   }
 }
