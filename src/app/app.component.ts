@@ -2,6 +2,8 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { fromEvent, Observable, Subscription } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 
+import { openDB, IDBPDatabase,  } from "idb";
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -15,7 +17,9 @@ export class AppComponent implements OnInit, OnDestroy {
   offlineEvent: Observable<Event>;
 
   subscriptions: Subscription[] = [];
-  connectionStatus: string;
+  connectionStatus: string = navigator.onLine ? 'online':'offline';
+  pendingRequests: number = 0;
+  db: IDBPDatabase;
 
   constructor(private http: HttpClient) { }
 
@@ -25,15 +29,18 @@ export class AppComponent implements OnInit, OnDestroy {
 
     this.subscriptions.push(this.onlineEvent.subscribe(e => {
       this.connectionStatus = 'online';
+      this.getPendingRequest();
       console.log('Online...');
     }));
 
     this.subscriptions.push(this.offlineEvent.subscribe(e => {
       this.connectionStatus = 'offline';
+      this.getPendingRequest();
       console.log('Offline...');
     }));
 
     this.getPosts();
+    this.initDbConnection();
   }
 
   ngOnDestroy(): void {
@@ -55,8 +62,23 @@ export class AppComponent implements OnInit, OnDestroy {
     };
     this.http
       .post('https://jsonplaceholder.typicode.com/posts', data)
-      .subscribe((res) => {
-        console.log(res);
+      .subscribe({
+        next:(res) => {
+          console.log(res);
+        },
+        error: () => {
+          this.getPendingRequest();
+        }
       })
+  }
+
+  async initDbConnection(){
+    this.db = await openDB('workbox-background-sync');
+    this.getPendingRequest();
+  }
+
+  async getPendingRequest() {
+  console.log("Updating Pending Requests....")
+   this.pendingRequests = (await this.db.getAllKeysFromIndex('requests','queueName')).length;
   }
 }
