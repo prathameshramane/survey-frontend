@@ -5,7 +5,7 @@ import { HttpClient } from '@angular/common/http';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.css'],
 })
 export class AppComponent implements OnInit, OnDestroy {
   title = 'AngularWorkbox';
@@ -17,46 +17,50 @@ export class AppComponent implements OnInit, OnDestroy {
   subscriptions: Subscription[] = [];
   connectionStatus: string;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   ngOnInit(): void {
     this.onlineEvent = fromEvent(window, 'online');
     this.offlineEvent = fromEvent(window, 'offline');
 
-    this.subscriptions.push(this.onlineEvent.subscribe(e => {
-      this.connectionStatus = 'online';
-      console.log('Online...');
-    }));
+    this.subscriptions.push(
+      this.onlineEvent.subscribe((e) => {
+        this.connectionStatus = 'online';
+        console.log('Online...');
+      })
+    );
 
-    this.subscriptions.push(this.offlineEvent.subscribe(e => {
-      this.connectionStatus = 'offline';
-      console.log('Offline...');
-    }));
+    this.subscriptions.push(
+      this.offlineEvent.subscribe((e) => {
+        this.connectionStatus = 'offline';
+        console.log('Offline...');
+      })
+    );
 
     this.getPosts();
   }
 
   ngOnDestroy(): void {
-    this.subscriptions.forEach(subscription => subscription.unsubscribe());
+    this.subscriptions.forEach((subscription) => subscription.unsubscribe());
   }
 
   getPosts() {
     this.http
       .get('https://jsonplaceholder.typicode.com/posts')
-      .subscribe((res) => {
+      .subscribe((res: any) => {
         this.posts = res;
-      })
+      });
   }
 
   createPost() {
     const data = {
-      title: "Hello World!",
-      body: "This is the body of the post!"
+      title: 'Hello World!',
+      body: 'This is the body of the post!',
     };
     this.http
       .post('https://jsonplaceholder.typicode.com/posts', data)
       .subscribe((res) => {
         console.log(res);
-      })
+      });
   }
 }
