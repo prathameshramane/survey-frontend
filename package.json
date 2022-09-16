@@ -23,11 +23,8 @@
     "@angular/router": "^14.2.0",
     "@azure/storage-blob": "^12.11.0",
     "bootstrap": "^5.2.1",
-<<<<<<< HEAD
     "dotenv": "^16.0.2",
-=======
     "idb": "^7.0.2",
->>>>>>> 0747e81c7583fe42ba36b67f329335cabf0714a4
     "rxjs": "~7.5.0",
     "uuid": "^9.0.0",
     "workbox-window": "^6.5.4",

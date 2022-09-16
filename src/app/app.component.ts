@@ -27,21 +27,6 @@ export class AppComponent implements OnInit, OnDestroy {
     this.onlineEvent = fromEvent(window, 'online');
     this.offlineEvent = fromEvent(window, 'offline');
 
-<<<<<<< HEAD
-    this.subscriptions.push(
-      this.onlineEvent.subscribe((e) => {
-        this.connectionStatus = 'online';
-        console.log('Online...');
-      })
-    );
-
-    this.subscriptions.push(
-      this.offlineEvent.subscribe((e) => {
-        this.connectionStatus = 'offline';
-        console.log('Offline...');
-      })
-    );
-=======
     this.subscriptions.push(this.onlineEvent.subscribe(e => {
       this.connectionStatus = 'online';
       this.getPendingRequest();
@@ -53,7 +38,6 @@ export class AppComponent implements OnInit, OnDestroy {
       this.getPendingRequest();
       console.log('Offline...');
     }));
->>>>>>> 0747e81c7583fe42ba36b67f329335cabf0714a4
 
     this.getPosts();
     this.initDbConnection();
@@ -78,11 +62,6 @@ export class AppComponent implements OnInit, OnDestroy {
     };
     this.http
       .post('https://jsonplaceholder.typicode.com/posts', data)
-<<<<<<< HEAD
-      .subscribe((res) => {
-        console.log(res);
-      });
-=======
       .subscribe({
         next:(res) => {
           console.log(res);
@@ -91,7 +70,6 @@ export class AppComponent implements OnInit, OnDestroy {
           this.getPendingRequest();
         }
       })
->>>>>>> 0747e81c7583fe42ba36b67f329335cabf0714a4
   }
 
   async initDbConnection(){
