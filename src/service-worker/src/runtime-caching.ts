@@ -16,3 +16,17 @@ workboxRouting.registerRoute(
         ]
     })
 )
+
+// Azure Blob Storage
+workboxRouting.registerRoute(
+    new RegExp('https://qtsstorage.blob.core.windows.net/(.*)/(.*)'),
+    new workboxStrategy.StaleWhileRevalidate({
+        cacheName:'azure',
+        plugins:[
+            new workboxExpiration.ExpirationPlugin({
+                maxEntries:30,
+                maxAgeSeconds: 60 * 60 // 1hr
+            })
+        ]
+    })
+)

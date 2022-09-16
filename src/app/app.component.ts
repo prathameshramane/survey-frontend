@@ -81,4 +81,12 @@ export class AppComponent implements OnInit, OnDestroy {
   console.log("Updating Pending Requests....")
    this.pendingRequests = (await this.db.getAllKeysFromIndex('requests','queueName')).length;
   }
+
+  getBlobData() {
+    this.http
+      .get('https://qtsstorage.blob.core.windows.net/questionnaires/first.json')
+      .subscribe((res) => {
+        console.log(res);
+      })
+  }
 }
