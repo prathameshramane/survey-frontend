@@ -4,6 +4,8 @@ import { HttpClient } from '@angular/common/http';
 
 import { openDB, IDBPDatabase,  } from "idb";
 
+import constants from './constants';
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -11,7 +13,7 @@ import { openDB, IDBPDatabase,  } from "idb";
 })
 export class AppComponent implements OnInit, OnDestroy {
   title = 'AngularWorkbox';
-  posts: any;
+  surveys: any;
 
   onlineEvent: Observable<Event>;
   offlineEvent: Observable<Event>;
@@ -20,6 +22,8 @@ export class AppComponent implements OnInit, OnDestroy {
   connectionStatus: string = navigator.onLine ? 'online':'offline';
   pendingRequests: number = 0;
   db: IDBPDatabase;
+
+  surveysUrl: string = `${constants.BACKEND_URL}/surveys/`;
 
   constructor(private http: HttpClient) {}
 
@@ -39,7 +43,7 @@ export class AppComponent implements OnInit, OnDestroy {
       console.log('Offline...');
     }));
 
-    this.getPosts();
+    this.getSurveys();
     this.initDbConnection();
   }
 
@@ -47,29 +51,24 @@ export class AppComponent implements OnInit, OnDestroy {
     this.subscriptions.forEach((subscription) => subscription.unsubscribe());
   }
 
-  getPosts() {
+  getSurveys() {
     this.http
-      .get('https://jsonplaceholder.typicode.com/posts')
+      .get(this.surveysUrl)
       .subscribe((res: any) => {
-        this.posts = res;
+        this.surveys = res;
       });
   }
 
-  createPost() {
-    const data = {
-      title: 'Hello World!',
-      body: 'This is the body of the post!',
-    };
-    this.http
-      .post('https://jsonplaceholder.typicode.com/posts', data)
-      .subscribe({
-        next:(res) => {
-          console.log(res);
-        },
-        error: () => {
-          this.getPendingRequest();
-        }
-      })
+  createSurvey(data:any, f:any) {
+   console.log(data);
+   this.http
+    .post(this.surveysUrl, data)
+    .subscribe(res => {
+      console.log(res)
+    })
+    data.time = new Date();
+    this.surveys.unshift  (data);
+    f.reset();
   }
 
   async initDbConnection(){

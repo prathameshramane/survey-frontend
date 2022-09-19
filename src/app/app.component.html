@@ -2,20 +2,38 @@
     <!-- <div class="alert alert-success" *ngIf="connectionStatus=='online'">
         You are online
     </div> -->
-    <div class="alert alert-secondary" *ngIf="pendingRequests > 0">
-        Pending Request: {{pendingRequests}}
-    </div>
+    <!-- <pending-requests></pending-requests>  -->
     <div class="alert alert-danger" *ngIf="connectionStatus=='offline'">
         Your are currently offline.
     </div>
     
     <h1 class="mb-4">Angular Workbox V10</h1>
-    <button class="btn btn-success" (click)="createPost()">Create Post</button>
-    <button class="btn btn-primary mx-3" (click)="getBlobData()">Get Blob</button>
-    <div class="card mb-2" *ngFor="let post of posts">
+    <button class="btn btn-primary mb-3" (click)="getBlobData()">Get Blob</button>
+    <h2>Create survey</h2>
+    <form #f="ngForm" (ngSubmit)="createSurvey(f.value, f)" class="mb-4">
+        <div class="mb-3">
+            <label for="name" class="form-label">Name</label>
+            <input required ngModel name="name" type="text" class="form-control" id="name">
+        </div>
+        <div class="mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input required ngModel name="email" type="email" class="form-control" id="email">
+        </div>
+        <div class="mb-3">
+            <label class="form-check-label" for="feedback">Feedback</label>
+            <textarea required ngModel name="feedback" class="form-control" id="feedback" rows="3"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+    
+    <h2>Survey</h2>
+
+    <div class="card mb-2" *ngFor="let survey of surveys">
         <div class="card-body">
-            <h5 class="card-title">{{post.title}}</h5>
-            <h6 class="card-subtitle mb-2 text-muted">{{post.body}}</h6>
+            <p>Created on {{survey.time | date: 'dd-MM-yyyy hh:mm:ss a'}}</p>
+            <h5 class="card-title">{{survey.name}}</h5>
+            <h6 class="card-subtitle mb-2 text-muted">{{survey.email}}</h6>
+            <p class="card-subtitle mb-2 text-muted">{{survey.feedback}}</p>
         </div>
     </div>
 </div>

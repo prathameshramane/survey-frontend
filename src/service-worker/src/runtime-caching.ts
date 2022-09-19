@@ -2,10 +2,12 @@ import * as workboxRouting from 'workbox-routing';
 import * as workboxStrategy from 'workbox-strategies';
 import * as workboxExpiration from 'workbox-expiration';
 
+import constants from '../../app/constants';
+
 
 // Runtime caching
 workboxRouting.registerRoute(
-    new RegExp('https://jsonplaceholder.typicode.com/(.*)'),
+    new RegExp(`${constants.BACKEND_URL}/surveys/`),
     new workboxStrategy.StaleWhileRevalidate({
         cacheName:'jsonplaceholder',
         plugins:[
