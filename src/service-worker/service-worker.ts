@@ -2,7 +2,8 @@ import * as workboxCore from 'workbox-core';
 import * as workboxPrecaching from 'workbox-precaching';
 
 import './src/runtime-caching';
-import './src/background-sync';
+// import './src/background-sync';
+import './src/workbox-queue';
 
 declare const self: ServiceWorkerGlobalScope;
 
