@@ -2,7 +2,7 @@ import { Queue } from 'workbox-background-sync';
 
 const bgSyncQueue = new Queue('my-custom-queue', {
     onSync: async ({ queue }) => {
-        await queue.replayRequests();
+        // await queue.replayRequests();
         let entry;
         while (entry = await queue.shiftRequest()) {
             try {
@@ -23,29 +23,38 @@ const bgSyncQueue = new Queue('my-custom-queue', {
     }
 });
 
-const addRequestToQueue = (url, body) => {
-    console.info("Adding request to background sync queue!");
-    const request = new Request(url, { method: 'POST', body: body })
-    request.headers.append('Authorization', 'Bearer <Token>');
-    request.headers.set('Authorization', 'Bearer <UPDATED_Token>')
-    bgSyncQueue.pushRequest({ request: request, timestamp: new Date().getTime(), metadata: { 'isCustom': 'YES' } })
+const addRequestToQueue = async (request) => {
+    console.log("Adding request to background sync queue!");
+    request.headers['Authorization'] =  'Bearer <Token>';
+    console.log("Set authorization to token", request);
+    request.headers['Authorization'] =   'Bearer <UPDATED_Token>';
+    console.log("Updated authorization token", request);
+    await bgSyncQueue.pushRequest({ request: request, timestamp: new Date().getTime(), metadata: { 'isCustom': 'YES' } })
 }
 
 
 self.addEventListener('fetch', (event:any) => {
     // Add in your own criteria here to return early if this
     // isn't a request that should use background sync.
+    console.log("Inside fetch handler!");
     if (event.request.method !== 'POST') {
         return;
     }
-
+    
+    
+    
     const bgSyncLogic = async () => {
-        try {
+        console.log("Network status: ", navigator.onLine);
+        if(navigator.onLine){
+            console.log("Awaiting for fetch!");
             const response = await fetch(event.request.clone());
+            console.log("Sending reseponse", response);
             return response;
-        } catch (error) {
-            await bgSyncQueue.pushRequest({ request: event.request });
-            return error;
+        } else {
+            console.log("Adding request to queue");
+            await addRequestToQueue(event.request);
+            console.log("Added to queue and returning false!");
+            return new Response();
         }
     };
 
