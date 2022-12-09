@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { fromEvent, Observable, Subscription } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 
-import { openDB, IDBPDatabase, } from "idb";
+import { openDB, IDBPDatabase } from 'idb';
 
 import constants from './constants';
 
@@ -25,23 +25,36 @@ export class AppComponent implements OnInit, OnDestroy {
 
   surveysUrl: string = `${constants.BACKEND_URL}/surveys/`;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   ngOnInit(): void {
     this.onlineEvent = fromEvent(window, 'online');
     this.offlineEvent = fromEvent(window, 'offline');
 
-    this.subscriptions.push(this.onlineEvent.subscribe(e => {
-      this.connectionStatus = 'online';
-      this.getPendingRequest();
-      console.log('Online...');
-    }));
+    this.subscriptions.push(
+      this.onlineEvent.subscribe((e) => {
+        this.connectionStatus = 'online';
+        this.getPendingRequest();
+        console.log('Online...');
+      })
+    );
 
-    this.subscriptions.push(this.offlineEvent.subscribe(e => {
-      this.connectionStatus = 'offline';
-      this.getPendingRequest();
-      console.log('Offline...');
-    }));
+    this.subscriptions.push(
+      this.offlineEvent.subscribe((e) => {
+        this.connectionStatus = 'offline';
+        this.getPendingRequest();
+        console.log('Offline...');
+      })
+    );
+
+    // self.navigator.serviceWorker.addEventListener('sync-updated', (event:CustomEvent) => {
+    //   console.log("Inside Pending request!: ",event.detail.currentCount);
+    // })
+
+    const channel = new BroadcastChannel('sync-updated');
+    channel.addEventListener('message', (event) => {
+      console.log('Received', event.data);
+    });
 
     this.getSurveys();
     this.initDbConnection();
@@ -52,25 +65,21 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   getSurveys() {
-    this.http
-      .get(this.surveysUrl)
-      .subscribe((res: any) => {
-        this.surveys = res;
-      });
+    this.http.get(this.surveysUrl).subscribe((res: any) => {
+      this.surveys = res;
+    });
   }
 
   createSurvey(data: any, f: any) {
     console.log(data);
-    this.http
-      .post(this.surveysUrl, data)
-      .subscribe({
-        next: res => {
-          console.log(res)
-        },
-        error: err => {
-          console.log(err)
-        }
-      })
+    this.http.post(this.surveysUrl, data).subscribe({
+      next: (res) => {
+        console.log(res);
+      },
+      error: (err) => {
+        console.log(err);
+      },
+    });
     data.time = new Date();
     this.surveys.unshift(data);
     f.reset();
@@ -82,8 +91,10 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   async getPendingRequest() {
-    console.log("Updating Pending Requests....")
-    this.pendingRequests = (await this.db.getAllKeysFromIndex('requests', 'queueName')).length;
+    console.log('Updating Pending Requests....');
+    this.pendingRequests = (
+      await this.db.getAllKeysFromIndex('requests', 'queueName')
+    ).length;
   }
 
   getBlobData() {
@@ -91,6 +102,6 @@ export class AppComponent implements OnInit, OnDestroy {
       .get('https://qtsstorage.blob.core.windows.net/questionnaires/first.json')
       .subscribe((res) => {
         console.log(res);
-      })
+      });
   }
 }

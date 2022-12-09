@@ -14,7 +14,9 @@ export class PendingRequestsComponent implements OnInit {
   }
 
   getPendingRequests() {
-    self.addEventListener('sync', this.getSyncInformation)
+    self.addEventListener('sync-updated', (event:CustomEvent) => {
+      console.log("Inside Pending request!: ",event.detail.currentCount);
+    })
   }
 
   async getSyncInformation(event) {
