@@ -25,7 +25,12 @@ export class AppComponent implements OnInit, OnDestroy {
 
   surveysUrl: string = `${constants.BACKEND_URL}/surveys/`;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+    addEventListener('online', () => {
+      console.log("Online event triggered!");
+      
+    })
+  }
 
   ngOnInit(): void {
     this.onlineEvent = fromEvent(window, 'online');

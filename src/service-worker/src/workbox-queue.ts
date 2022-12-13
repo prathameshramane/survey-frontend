@@ -23,6 +23,7 @@ const bgSyncQueue = new Queue('my-custom-queue', {
     console.log('Replay complete!');
   },
 });
+// const bgSyncQueue = new Queue('my-custom-queue');
 
 const raiseSyncUpdatedEvent = async () => {
   const EVENT_NAME = 'sync-updated';
@@ -54,6 +55,28 @@ const addRequestToQueue = async (request) => {
   await raiseSyncUpdatedEvent();
 };
 
+const replayQueue = async () => {
+  // await queue.replayRequests();
+  let entry;
+  while ((entry = await bgSyncQueue.shiftRequest())) {
+    try {
+      await fetch(entry.request);
+      console.info('Replay successful for request', entry.request);
+      console.log('====================================');
+      console.log((await bgSyncQueue.getAll()).length);
+      console.log('====================================');
+      await raiseSyncUpdatedEvent();
+    } catch (error) {
+      console.error('Replay failed for request', entry.request, error);
+
+      // Put the entry back in the bgSyncQueue and re-throw the error:
+      await bgSyncQueue.unshiftRequest(entry);
+      throw error;
+    }
+  }
+  console.log('Replay complete!');
+};
+
 self.addEventListener('fetch', (event: any) => {
   // Add in your own criteria here to return early if this
   // isn't a request that should use background sync.
@@ -79,3 +102,8 @@ self.addEventListener('fetch', (event: any) => {
 
   event.respondWith(bgSyncLogic());
 });
+
+// self.addEventListener('sync', async (event) => {
+//   console.log("Replaying queue using SYNC Event!");
+//   await replayQueue();
+// });
